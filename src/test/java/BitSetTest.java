@@ -1,59 +1,79 @@
 
+
+
 import org.junit.Test;
+import java.util.Iterator;
 import static org.junit.Assert.*;
 
 public class BitSetTest {
 
     @Test
-    public void contains() throws Exception {
-        BitSet<String> bitSet = new BitSet<>(4, new String[] {"1","2","1"});
-        bitSet.remove("1");
-        assertFalse(bitSet.contains("1"));
-    }
-
-    @Test (expected = IndexOutOfBoundsException.class)
-    public void get() throws Exception {
-        BitSet<String> bitSet = new BitSet<>(4);
-        bitSet.add("Hello");
-        bitSet.add("world");
-        bitSet.add("!");
-        assertNotEquals(bitSet.get(2),"World");
-        bitSet.get(4);
+    public void set() {
+        BitSet bitSet = new BitSet(5);
+        bitSet.set(2,4,true);
+        bitSet.set(3,false);
+        bitSet.set(0,true);
+        assertEquals(bitSet.toString(), "10101");
     }
 
     @Test
-    public void intersection() throws Exception {
-         BitSet<Integer> bitSet1 = new BitSet<>(4, new Integer[] {1,2,3,4});
-         BitSet<Integer> bitSet2 = new BitSet<>(6, new Integer[] {2,4,6,8,10,12});
-         assertEquals(bitSet1.intersection(bitSet2), new BitSet<Integer>(2, new Integer[]{2,4}));
+    public void get() {
+        BitSet bitSet = new BitSet(3);
+        bitSet.set(1,true);
+        assertEquals(bitSet.get(0),0);
+        assertEquals(bitSet.get(1),1);
     }
 
     @Test
-    public void unification() throws Exception {
-        BitSet<String> bitSet1 = new BitSet<>(5,new String[] {"1","2","3","4","5"});
-        BitSet<String> bitSet2 = new BitSet<>(5,new String[] {"3","4","5","6","7"});
-        assertEquals(bitSet1.unification(bitSet2), new BitSet<>(7,new String[]{"1","2","3","4","5","6","7"}));
+    public void and() throws Exception {
+        BitSet bitSet1 = new BitSet(5);
+        BitSet bitSet2 = new BitSet(5);
 
-        BitSet<String> bitSet3 = new BitSet<>(0,new String[] {});
-        BitSet<String> bitSet4 = new BitSet<>(5,new String[] {"Hello","mister!"});
-        assertEquals(bitSet3.unification(bitSet4), new BitSet<>(2,new String[] {"Hello","mister!"}));
+        bitSet1.set(0,3,true);
+        bitSet2.set(2,4,true);
+        bitSet1.and(bitSet2);
+
+        assertEquals(bitSet1.toString(), "00110");
+
+    }
+
+    @Test (expected = Exception.class)
+    public void or() throws Exception {
+        BitSet bitSet1 = new BitSet(5);
+        BitSet bitSet2 = new BitSet(5);
+
+        bitSet1.set(0,3,true);
+        bitSet2.set(2,3,true);
+        bitSet1.or(bitSet2);
+
+        assertEquals(bitSet1.toString(), "11110");
+
+        BitSet bitSet3 = new BitSet(3);
+        bitSet1.or(bitSet3);
+
     }
 
     @Test
-    public void complement() throws Exception {
-        BitSet<String> bitSet1 = new BitSet<>(5,new String[] {"1","2","3","4","5"});
-        BitSet<String> bitSet2 = new BitSet<>(5,new String[] {"3","4","5","6","7"});
-        assertEquals(bitSet1.complement(bitSet2), new BitSet<>(2,new String[]{"1","2"}));
+    public void not() throws Exception {
+        BitSet bitSet1 = new BitSet(5);
+
+        bitSet1.set(0,3,true);
+        bitSet1.not();
+
+        assertEquals(bitSet1.toString(), "00001");
     }
 
     @Test
-    public void iterator() throws Exception {
-        BitSet<Character> bitSet = new BitSet<>(4, new Character[]{'j','o','h','n'});
-        assertEquals(bitSet.next(), 'j');
-        assertEquals(bitSet.next(), 'o');
-        assertTrue(bitSet.hasNext());
-    }
+    public void iterator() {
+        BitSet bitSet1 = new BitSet(5);
+        bitSet1.set(1,true);
+        Iterator<Integer> iterator = bitSet1.iterator();
 
+        assertEquals(iterator.next(), (Integer) 0);
+        assertEquals(iterator.next(), (Integer) 1);
+        assertTrue(iterator.hasNext());
+
+    }
 
 
 }

@@ -1,148 +1,103 @@
 import java.util.*;
 
-
-public class BitSet<T> implements Iterator {
+public class BitSet implements Iterable<Integer> {
 
     private final int size;
-    private ArrayList<T> container;
-    private Iterator<T> iter;
+    private final boolean[] container;
 
     public BitSet(int size) {
         if (size < 0) {
             throw new java.lang.NegativeArraySizeException("Size of bitset can't be negative");
         } else {
             this.size = size;
-            container = new ArrayList<>(size);
-            iter = container.iterator();
+            container = new boolean[size];
+            Arrays.fill(container,false);
         }
     }
 
-    public BitSet(int size, T... arg) throws Exception {
-        if (size < 0) {
-            throw new java.lang.NegativeArraySizeException("Size of bitset can't be negative");
-        } else {
-            this.size = size;
-            container = new ArrayList<>(size);
-            this.add(arg);
-            iter = container.iterator();
+    public void set (int index, boolean value) {
+        if (index >= size) {
+            throw new ArrayIndexOutOfBoundsException("Index is bigger than bitset size.");
+        }
+        container[index] = value;
+    }
+
+    public void set (int fromIndex, int toIndex, boolean value) {
+        for (int index = fromIndex; index <= toIndex; index++) {
+            container[index] = value;
         }
     }
 
-    public boolean contains(T obj) {
-        return container.contains(obj);
+    public int get (int index) {
+        return container[index] ? 1 : 0;
     }
 
-    public int length() {return size;}
-
-    public T get(int index) throws Exception {
-        return container.get(index);
-    }
-
-    public void add(T obj) throws Exception {
-        if (container.size() == size) {
-            throw new Exception("Bitset is crowded");
+    public void and (BitSet bitSet) throws Exception {
+        if (size != bitSet.size) {
+            throw new Exception("bitsets have different size");
         }
-        else {
-            if (!this.contains(obj)) {
-                container.add(obj);
-            }
+        for (int index = 0; index < size; index++) {
+            container[index] = container[index] && bitSet.container[index];
         }
     }
 
-    public void add(T[] arr) throws Exception {
-        for (T elem: arr) {
-            this.add(elem);
+    public void or (BitSet bitSet) throws Exception {
+        if (size != bitSet.size) {
+            throw new Exception("bitsets have different size");
+        }
+        for (int index = 0; index < size; index++) {
+            container[index] = container[index] || bitSet.container[index];
         }
     }
 
-    public boolean remove(T obj) {
-        return container.remove(obj);
-    }
-
-    private BitSet<T> addFromArray(ArrayList<T> arrayList) throws Exception {
-
-        BitSet<T> newBitSet = new BitSet<T>(arrayList.size());
-        for (T elem: arrayList) {
-            newBitSet.add(elem);
+    public void not () {
+        for (int index = 0; index < size; index++) {
+            container[index] = !container[index];
         }
-        return newBitSet;
     }
-
-    public BitSet<T> intersection(BitSet<T> bitSet) throws Exception {
-
-        ArrayList<T> result =
-                new ArrayList<>(Math.max(this.container.size(), bitSet.container.size()));
-
-        for (T elem: this.container) {
-            if (bitSet.contains(elem)) {
-                result.add(elem);
-            }
-        }
-        return addFromArray(result);
-    }
-
-    public BitSet<T> unification (BitSet<T> bitSet) throws Exception {
-        ArrayList<T> result = new ArrayList<>(size + bitSet.size);
-        for (T elem: this.container) {
-            result.add(elem);
-        }
-
-        for (T elem: bitSet.container) {
-            if (!result.contains(elem)) {
-                result.add(elem);
-            }
-        }
-        return addFromArray(result);
-    }
-
-    public BitSet<T> complement(BitSet<T> bitSet) throws Exception {
-        ArrayList<T> result =
-                new ArrayList<>(this.container.size());
-
-        for (T elem: this.container) {
-            if (this.contains(elem) && !bitSet.contains(elem)) {
-                result.add(elem);
-            }
-        }
-        return addFromArray(result);
-
-    }
-
-
 
     @Override
-    public int hashCode() {
-        int result = size;
-        result = 31 * result + (container != null ? container.hashCode() : 0);
-        return result;
+    public String toString() {
+        StringBuilder stringBuilder = new StringBuilder();
+        for (boolean elem: container) {
+            stringBuilder.append(elem ? 1 : 0);
+        }
+        return stringBuilder.toString();
     }
 
     @Override
     public boolean equals(Object obj) {
-
-        if (this == obj) return true;
-        if (obj instanceof BitSet<?>) {
-            BitSet<T> bitSet = (BitSet<T>) obj;
-            return container.equals(bitSet.container);
+        if (this == obj)
+            return true;
+        if (obj instanceof BitSet) {
+            BitSet bitSet = (BitSet) obj;
+            return Arrays.equals(bitSet.container,container);
         }
         return false;
     }
 
     @Override
-    public String toString() {
-        return container.toString();
+    public java.util.Iterator<Integer> iterator() {
+        return new Iterator();
     }
 
-    @Override
-    public boolean hasNext() {
-        return iter.hasNext();
 
-    }
-    @Override
-    public Object next() {
-        return iter.next();
-    }
+    class Iterator implements java.util.Iterator<Integer> {
 
+        int current = 0;
+
+        @Override
+        public boolean hasNext() {
+            return current < size;
+        }
+
+        @Override
+        public Integer next() {
+            Integer ans = container[current] ? 1 : 0;
+            current++;
+            return ans;
+        }
+    }
 }
 
 
