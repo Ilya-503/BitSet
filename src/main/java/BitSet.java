@@ -2,58 +2,78 @@ import java.util.*;
 
 public class BitSet implements Iterable<Integer> {
 
-    private final int size;
+    private final int SIZE;
     private final boolean[] container;
 
     public BitSet(int size) {
-        if (size < 0) {
+        if (BitSet.this.SIZE < 0) {
             throw new java.lang.NegativeArraySizeException("Size of bitset can't be negative");
         } else {
-            this.size = size;
-            container = new boolean[size];
-            Arrays.fill(container,false);
+            this.SIZE = size;
+            container = new boolean[BitSet.this.SIZE];
         }
     }
 
     public void set (int index, boolean value) {
-        if (index >= size) {
-            throw new ArrayIndexOutOfBoundsException("Index is bigger than bitset size.");
+        if (index >= SIZE) {
+            throw new ArrayIndexOutOfBoundsException("Index is bigger than bitset SIZE");
         }
         container[index] = value;
     }
 
     public void set (int fromIndex, int toIndex, boolean value) {
+
+        if (fromIndex >= SIZE) {
+            throw new ArrayIndexOutOfBoundsException("Start index is bigger than bitset SIZE");
+        }
+
+        if (toIndex >= SIZE) {
+            throw new ArrayIndexOutOfBoundsException("End index is bigger than bitset SIZE");
+        }
+
         for (int index = fromIndex; index <= toIndex; index++) {
             container[index] = value;
         }
     }
 
     public int get (int index) {
+        if (index >= SIZE) {
+            throw new ArrayIndexOutOfBoundsException("Index is bigger than bitset SIZE");
+        }
         return container[index] ? 1 : 0;
     }
 
     public void and (BitSet bitSet) throws Exception {
-        if (size != bitSet.size) {
-            throw new Exception("bitsets have different size");
+        if (SIZE != bitSet.SIZE) {
+            throw new Exception("bitsets have different SIZE");
         }
-        for (int index = 0; index < size; index++) {
+        for (int index = 0; index < SIZE; index++) {
             container[index] = container[index] && bitSet.container[index];
         }
     }
 
     public void or (BitSet bitSet) throws Exception {
-        if (size != bitSet.size) {
-            throw new Exception("bitsets have different size");
+        if (SIZE != bitSet.SIZE) {
+            throw new Exception("bitsets have different SIZE");
         }
-        for (int index = 0; index < size; index++) {
+        for (int index = 0; index < SIZE; index++) {
             container[index] = container[index] || bitSet.container[index];
         }
     }
 
     public void not () {
-        for (int index = 0; index < size; index++) {
+        for (int index = 0; index < SIZE; index++) {
             container[index] = !container[index];
         }
+    }
+
+    @Override
+    public int hashCode() {
+        int result = SIZE;
+        for (int index = 0; index < SIZE; index++) {
+            result += (int) Math.pow(2,index);
+        }
+        return result;
     }
 
     @Override
@@ -88,7 +108,7 @@ public class BitSet implements Iterable<Integer> {
 
         @Override
         public boolean hasNext() {
-            return current < size;
+            return current < SIZE;
         }
 
         @Override
