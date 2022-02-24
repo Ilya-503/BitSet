@@ -13,15 +13,15 @@ public class BitSetTest {
         bitSet.set(2,4,true);
         bitSet.set(3,false);
         bitSet.set(0,true);
-        assertEquals(bitSet.toString(), "10101");
+        assertEquals("10101", bitSet.toString());
     }
 
     @Test
     public void get() {
         BitSet bitSet = new BitSet(3);
         bitSet.set(1,true);
-        assertEquals(bitSet.get(0),0);
-        assertEquals(bitSet.get(1),1);
+        assertEquals(0, bitSet.get(0));
+        assertEquals(1, bitSet.get(1));
     }
 
     @Test
@@ -32,9 +32,13 @@ public class BitSetTest {
         bitSet1.set(0,3,true);
         bitSet2.set(2,4,true);
         bitSet1.and(bitSet2);
+        assertEquals("00110", bitSet1.toString());
 
-        assertEquals(bitSet1.toString(), "00110");
-
+        bitSet1.set(0,4,false);
+        bitSet2.set(4,false);
+        assertEquals("00110", bitSet2.toString());
+        bitSet2.and(bitSet1);
+        assertEquals("00000", bitSet2.toString());
     }
 
     @Test (expected = Exception.class)
@@ -45,22 +49,28 @@ public class BitSetTest {
         bitSet1.set(0,3,true);
         bitSet2.set(2,3,true);
         bitSet1.or(bitSet2);
+        assertEquals("11110", bitSet1.toString());
 
-        assertEquals(bitSet1.toString(), "11110");
+        bitSet1.set(1,2,false);
+        bitSet1.or(new BitSet(5));
+        assertEquals("10010", bitSet1.toString());
 
         BitSet bitSet3 = new BitSet(3);
         bitSet1.or(bitSet3);
-
     }
 
     @Test
-    public void not() throws Exception {
+    public void not() {
         BitSet bitSet1 = new BitSet(5);
 
         bitSet1.set(0,3,true);
         bitSet1.not();
+        assertEquals("00001", bitSet1.toString());
 
-        assertEquals(bitSet1.toString(), "00001");
+        bitSet1.set(0,true);
+        bitSet1.set(4,false);
+        bitSet1.not();
+        assertEquals("01111",bitSet1.toString());
     }
 
     @Test
@@ -69,11 +79,27 @@ public class BitSetTest {
         bitSet1.set(1,true);
         Iterator<Integer> iterator = bitSet1.iterator();
 
-        assertEquals(iterator.next(), (Integer) 0);
-        assertEquals(iterator.next(), (Integer) 1);
+        assertEquals((Integer) 0, iterator.next());
+        assertEquals((Integer) 1, iterator.next());
         assertTrue(iterator.hasNext());
-
     }
 
+    @Test
+    public void operations() throws Exception {
 
+        BitSet bitSet1 = new BitSet(5);
+        BitSet bitSet2 = new BitSet(5);
+
+        bitSet1.set(2,4,true);
+        bitSet2.or(bitSet1);
+        assertEquals(1, bitSet2.get(2));
+        assertEquals("00111", bitSet2.toString());
+
+        bitSet1.or(bitSet1);
+        assertEquals("00111", bitSet1.toString());
+
+        bitSet2.set(4,false);
+        bitSet2.not();
+        assertEquals(bitSet2.toString(), "11001");
+    }
 }
