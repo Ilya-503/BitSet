@@ -17,10 +17,12 @@ public class BitSetTest {
 
     @Test
     public void get() {
-        BitSet bitSet = new BitSet(3);
+        BitSet bitSet = new BitSet(5);
         bitSet.set(1,true);
         assertEquals(0, bitSet.get(0));
         assertEquals(1, bitSet.get(1));
+        bitSet.set(3,0,true);
+        assertEquals("01000", bitSet.toString());
     }
 
     @Test

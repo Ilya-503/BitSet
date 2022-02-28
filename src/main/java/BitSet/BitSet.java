@@ -8,30 +8,28 @@ public class BitSet implements Iterable<Integer> {
     private final boolean[] container;
 
     public BitSet(int size) {
-        if (BitSet.this.SIZE < 0) {
+        if (size < 0) {
             throw new java.lang.NegativeArraySizeException("Size of bitset can't be negative");
-        } else {
-            this.SIZE = size;
-            container = new boolean[BitSet.this.SIZE];
+        }
+        this.SIZE = size;
+        container = new boolean[SIZE];
+
+    }
+
+    private void checkIllegalIndex(int index, String message) {
+        if (index >= SIZE) {
+            throw new ArrayIndexOutOfBoundsException(message);
         }
     }
 
     public void set (int index, boolean value) {
-        if (index >= SIZE) {
-            throw new ArrayIndexOutOfBoundsException("Index is bigger than bitset SIZE");
-        }
+        checkIllegalIndex(index, "Index is bigger than bitset SIZE");
         container[index] = value;
     }
 
     public void set (int fromIndex, int toIndex, boolean value) {
-
-        if (fromIndex >= SIZE) {
-            throw new ArrayIndexOutOfBoundsException("Start index is bigger than bitset SIZE");
-        }
-
-        if (toIndex >= SIZE) {
-            throw new ArrayIndexOutOfBoundsException("End index is bigger than bitset SIZE");
-        }
+        checkIllegalIndex(fromIndex, "Start index is bigger than bitset SIZE");
+        checkIllegalIndex(toIndex, "End index is bigger than bitset SIZE");
 
         for (int index = fromIndex; index <= toIndex; index++) {
             container[index] = value;
@@ -39,9 +37,7 @@ public class BitSet implements Iterable<Integer> {
     }
 
     public int get (int index) {
-        if (index >= SIZE) {
-            throw new ArrayIndexOutOfBoundsException("Index is bigger than bitset SIZE");
-        }
+        checkIllegalIndex(index, "Index is bigger than bitset SIZE");
         return container[index] ? 1 : 0;
     }
 
@@ -69,11 +65,10 @@ public class BitSet implements Iterable<Integer> {
         }
     }
 
-    @Override
     public int hashCode() {
         int result = SIZE;
-        for (int index = 0; index < SIZE; index++) {
-            result += (int) Math.pow(2,index);
+        for(int index = 0; index < SIZE; index++) {
+            result += container[index]? 31 % index : 0;
         }
         return result;
     }
