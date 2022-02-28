@@ -67,8 +67,13 @@ public class BitSet implements Iterable<Integer> {
 
     public int hashCode() {
         int result = SIZE;
+        long tmp;
         for(int index = 0; index < SIZE; index++) {
-            result += container[index]? 31 % index : 0;
+            if (container[index]) {
+                tmp = Double.doubleToLongBits(index);
+                tmp = tmp << 3;
+                result += tmp % 100;
+            }
         }
         return result;
     }
