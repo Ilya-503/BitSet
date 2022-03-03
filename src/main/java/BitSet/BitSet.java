@@ -21,7 +21,7 @@ public class BitSet implements Iterable<Integer> {
             throw new ArrayIndexOutOfBoundsException(valueName + " can't be negative");
         }
         if (index >= SIZE) {
-            throw new ArrayIndexOutOfBoundsException(valueName + "is bigger than bitset size");
+            throw new ArrayIndexOutOfBoundsException(valueName + " is bigger than bitset size");
         }
     }
 
@@ -39,7 +39,6 @@ public class BitSet implements Iterable<Integer> {
     public void set (int fromIndex, int toIndex, boolean value) {
         checkIllegalIndex(fromIndex, "Start index");
         checkIllegalIndex(toIndex, "End index");
-
         for (int index = fromIndex; index <= toIndex; index++) {
             container[index] = value;
         }
