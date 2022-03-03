@@ -16,20 +16,29 @@ public class BitSet implements Iterable<Integer> {
 
     }
 
-    private void checkIllegalIndex(int index, String message) {
+    private void checkIllegalIndex(int index, String valueName) {
+        if (index < 0) {
+            throw new ArrayIndexOutOfBoundsException(valueName + " can't be negative");
+        }
         if (index >= SIZE) {
-            throw new ArrayIndexOutOfBoundsException(message);
+            throw new ArrayIndexOutOfBoundsException(valueName + "is bigger than bitset size");
+        }
+    }
+
+    private void checkBitSetsSizes(BitSet bitSet) throws Exception {
+        if (SIZE != bitSet.SIZE) {
+            throw new Exception("bitsets have different SIZE");
         }
     }
 
     public void set (int index, boolean value) {
-        checkIllegalIndex(index, "Index is bigger than bitset SIZE");
+        checkIllegalIndex(index, "Index");
         container[index] = value;
     }
 
     public void set (int fromIndex, int toIndex, boolean value) {
-        checkIllegalIndex(fromIndex, "Start index is bigger than bitset SIZE");
-        checkIllegalIndex(toIndex, "End index is bigger than bitset SIZE");
+        checkIllegalIndex(fromIndex, "Start index");
+        checkIllegalIndex(toIndex, "End index");
 
         for (int index = fromIndex; index <= toIndex; index++) {
             container[index] = value;
@@ -37,23 +46,19 @@ public class BitSet implements Iterable<Integer> {
     }
 
     public int get (int index) {
-        checkIllegalIndex(index, "Index is bigger than bitset SIZE");
+        checkIllegalIndex(index, "Index");
         return container[index] ? 1 : 0;
     }
 
     public void and (BitSet bitSet) throws Exception {
-        if (SIZE != bitSet.SIZE) {
-            throw new Exception("bitsets have different SIZE");
-        }
+        checkBitSetsSizes(bitSet);
         for (int index = 0; index < SIZE; index++) {
             container[index] = container[index] && bitSet.container[index];
         }
     }
 
     public void or (BitSet bitSet) throws Exception {
-        if (SIZE != bitSet.SIZE) {
-            throw new Exception("bitsets have different SIZE");
-        }
+        checkBitSetsSizes(bitSet);
         for (int index = 0; index < SIZE; index++) {
             container[index] = container[index] || bitSet.container[index];
         }
